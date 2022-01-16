@@ -23,6 +23,7 @@ public class EventManager : MonoBehaviour
 
 
 
+    // May work on later if I have time. I wanted a generic event manager that I could trigger from anywhere.
     private Dictionary<string, Action<dynamic>> EventDictionary;
 
     public static void TriggerEvent(string eventName, Action<dynamic> listener)
@@ -73,6 +74,16 @@ public class EventManager : MonoBehaviour
 
 
 
-    //public event Action onDoorTriggerEnter
-    //    public 
+    public event Action<int> OnDoorOpenTriggerEnter;
+    public event Action<int> OnDoorOpenTriggerExit;
+
+    public void DoorOpenTriggerEnter(int id)
+    {
+        OnDoorOpenTriggerEnter?.Invoke(id);
+    }
+
+    public void DoorOpenTriggerExit(int id)
+    {
+        OnDoorOpenTriggerExit?.Invoke(id);
+    }
 }

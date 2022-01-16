@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PickupAnimator : MonoBehaviour
@@ -12,6 +13,9 @@ public class PickupAnimator : MonoBehaviour
 
 	[SerializeField]
 	private ParticleSystem collectEffect;
+
+
+	public event Action<float> OnFinish;
 
 	/// <summary>
 	/// Play the idle animation and effects.
@@ -32,6 +36,7 @@ public class PickupAnimator : MonoBehaviour
 		modelRenderer.enabled = false;
 		idleEffect.Stop();
 		collectEffect.Play();
+		OnFinish?.Invoke(collectEffect.main.duration);
 	}
 
 	private void Update()

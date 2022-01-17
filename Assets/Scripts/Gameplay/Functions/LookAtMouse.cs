@@ -5,7 +5,11 @@ using UnityEngine;
 public class LookAtMouse : MonoBehaviour
 {
     [SerializeField]
-    LayerMask aimLayerMask;
+    private Camera cam;
+
+    [SerializeField]
+    private LayerMask layerMask;
+
     // Update is called once per frame
     void Update()
     {
@@ -14,13 +18,14 @@ public class LookAtMouse : MonoBehaviour
 
     private void AimLookAtMouse()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out var hit, Mathf.Infinity, aimLayerMask))
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        if(Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, layerMask))
         {
             var direction = hit.point - transform.position;
             direction.y = 0f;
             direction.Normalize();
             transform.forward = direction;
         }
+
     }
 }

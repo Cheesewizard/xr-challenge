@@ -55,7 +55,10 @@ public class AchievementManager : MonoBehaviour
 
     //}
 
+    public void SuperZombieAchievement()
+    {
 
+    }
 
 
 

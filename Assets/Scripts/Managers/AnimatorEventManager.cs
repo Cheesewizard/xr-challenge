@@ -22,13 +22,14 @@ public class AnimatorEventManager : MonoBehaviour
     }
 
 
+    // Player
     public event Action OnPlayerDeath;
     public event Action<bool> OnPlayerRun;
     public event Action<bool> OnPlayerWalk;
     public event Action<bool> OnPlayerShoot;
     public event Action<bool> OnPlayerJump;
     public event Action<bool> OnPlayerAim;
-    public event Action<Vector2> OnSpeedChange;
+    public event Action<Vector2> OnPlayerSpeedChange;
 
     public void PlayerDeath()
     {
@@ -62,6 +63,31 @@ public class AnimatorEventManager : MonoBehaviour
 
     public void SetMoveSpeed(Vector2 speed)
     {
-        OnSpeedChange?.Invoke(speed);
+        OnPlayerSpeedChange?.Invoke(speed);
+    }
+
+
+    // Enemies
+    public event Action<Enemy> OnEnemyDeath;
+    public event Action<Enemy> OnSuperEnemyDeath;
+    public event Action<bool> OnEnemyRun;
+    public event Action<bool> OnEnemyWalk;
+    public event Action<bool> OnEnemyAttack;
+    public event Action<Vector2> OnEnemySpeedChange;
+    public event Action<Enemy, float> OnEnemyDamage;
+    
+
+    public void EnemyDeath(Enemy enemy)
+    {
+        OnEnemyDeath?.Invoke(enemy);
+    }
+    public void SuperEnemyDeath(Enemy enemy)
+    {
+        OnSuperEnemyDeath?.Invoke(enemy);
+    }
+  
+    public void EnemyDamage(Enemy enemy, float amount)
+    {
+        OnEnemyDamage?.Invoke(enemy, amount);
     }
 }

@@ -21,7 +21,20 @@ public class StatsManager : MonoBehaviour
     }
 
 
-   // public event Action 
+    private void OnEnable()
+    {
+        AnimatorEventManager.Instance.OnEnemyDeath += Instance.UpdateEnemiesKilled;
+        AnimatorEventManager.Instance.OnSuperEnemyDeath += Instance.UpdateEnemiesKilled;
+        AnimatorEventManager.Instance.OnEnemyDamage += Instance.UpdateDamageGiven;
+    }
+
+
+    private void OnDisable()
+    {
+        AnimatorEventManager.Instance.OnEnemyDeath -= Instance.UpdateEnemiesKilled;
+        AnimatorEventManager.Instance.OnSuperEnemyDeath -= Instance.UpdateEnemiesKilled;
+        AnimatorEventManager.Instance.OnEnemyDamage -= Instance.UpdateDamageGiven;
+    }
 
 
     private Stats stats;
@@ -30,9 +43,30 @@ public class StatsManager : MonoBehaviour
         stats = new Stats();
     }
 
-    public void UpdateStats(Pickup pickup)
+    public void UpdateItemsCollected(Pickup pickup)
     {
         stats.ItemsCollected += 1;
-        stats.ItemsCollected += 1;
     }
+
+    public void UpdateEnemiesKilled(Enemy enemy)
+    {
+        stats.EnemiesKilled += 1;
+    }
+
+    public void UpdateDamageGiven(Enemy enemy, float amount)
+    {
+        stats.TotalDamageGiven += amount;
+    }
+
+    public void UpdateDamageTaken(float amount)
+    {
+        stats.TotalDamageTaken += amount;
+    }
+
+
+
+    //public void UpdateWeaponStats(IWeapon gun)
+    //{
+    //    stats.TotalBulletsFiredCount
+    //}
 }

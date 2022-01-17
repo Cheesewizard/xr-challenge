@@ -21,6 +21,9 @@ public class Stats
     }
 
     public int EnemiesKilled { get; set; } = 0;
+    public float TotalDamageGiven { get; set; }
+    public float TotalDamageTaken { get; set; }
+    public int TotalBulletsFiredCount { get; set; } = 0;
     public int JumpCount { get; set; } = 0;
     public GameObject[] ItemsRemaining { get; set; }
 }

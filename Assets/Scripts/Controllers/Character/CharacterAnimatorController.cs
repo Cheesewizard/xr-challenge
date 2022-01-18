@@ -13,34 +13,42 @@ public class CharacterAnimatorController : MonoBehaviour
     private void OnEnable()
     {
         // Register events
+    
+        AnimatorEventManager.Instance.OnPlayerRun += IsRunning;
+        AnimatorEventManager.Instance.OnPlayerWalk += IsWalking;     
+        AnimatorEventManager.Instance.OnPlayerJump += IsJumping;
+        AnimatorEventManager.Instance.OnPlayerTouchGround += IsOnGround;
+        
+        AnimatorEventManager.Instance.OnPlayerSpeedChange += SetMoveSpeed;
 
         AnimatorEventManager.Instance.OnPlayerDeath += Kill;
-        AnimatorEventManager.Instance.OnPlayerRun += IsRunning;
-        AnimatorEventManager.Instance.OnPlayerWalk += IsWalking;
+        AnimatorEventManager.Instance.OnPlayerHurt += IsHurt;
+
         AnimatorEventManager.Instance.OnPlayerShoot += IsShooting;
-        AnimatorEventManager.Instance.OnPlayerJump += IsJumping;
         AnimatorEventManager.Instance.OnPlayerAim += IsAiming;
-        AnimatorEventManager.Instance.OnPlayerSpeedChange += SetMoveSpeed;
-        
+        AnimatorEventManager.Instance.OnPlayerReload += IsPlayerReload;
+        AnimatorEventManager.Instance.OnPlayerHasReloaded += HasReloaded;
     }
 
     private void OnDisable()
-    {
-        AnimatorEventManager.Instance.OnPlayerDeath -= Kill;
+    {    
         AnimatorEventManager.Instance.OnPlayerRun -= IsRunning;
-        AnimatorEventManager.Instance.OnPlayerWalk -= IsWalking;
-        AnimatorEventManager.Instance.OnPlayerShoot -= IsShooting;
+        AnimatorEventManager.Instance.OnPlayerWalk -= IsWalking; 
         AnimatorEventManager.Instance.OnPlayerJump -= IsJumping;
-        AnimatorEventManager.Instance.OnPlayerAim -= IsAiming;
+        AnimatorEventManager.Instance.OnPlayerTouchGround -= IsOnGround;
         AnimatorEventManager.Instance.OnPlayerSpeedChange -= SetMoveSpeed;
+
+        AnimatorEventManager.Instance.OnPlayerDeath -= Kill;
+        AnimatorEventManager.Instance.OnPlayerHurt -= IsHurt;
+
+        AnimatorEventManager.Instance.OnPlayerAim -= IsAiming;
+        AnimatorEventManager.Instance.OnPlayerShoot -= IsShooting;
+        AnimatorEventManager.Instance.OnPlayerReload -= IsPlayerReload;
+        AnimatorEventManager.Instance.OnPlayerHasReloaded -= HasReloaded;
     }
 
 
-    public void Kill()
-    {
-        animator.SetTrigger("IsDead");
-    }
-
+    // Movement Animations
     public void IsRunning(bool state)
     {
         animator.SetBool("IsRunning", state);
@@ -53,22 +61,52 @@ public class CharacterAnimatorController : MonoBehaviour
 
     public void IsJumping(bool state)
     {
-        animator.SetBool("isJumping", state);
+        animator.SetBool("IsJumping", state);
     }
 
-    public void IsShooting(bool state)
+    public void IsOnGround(bool state)
     {
-
+        animator.SetBool("IsOnGround", state);
     }
 
+
+    public void SetMoveSpeed(Vector3 speed)
+    {
+        animator.SetFloat("moveX", speed.x, 0.1f, Time.deltaTime);
+        animator.SetFloat("moveZ", speed.z, 0.1f, Time.deltaTime);
+    }
+
+
+    // Health Animations
+    public void IsHurt(bool state)
+    {
+        animator.SetBool("IsHurt", state);
+    }
+    public void Kill()
+    {
+        animator.SetTrigger("IsDead");
+    }
+
+
+    // Weapon Animations
     public void IsAiming(bool state)
     {
         animator.SetBool("IsAiming", state);
     }
 
-    public void SetMoveSpeed(Vector2 speed)
+    public void IsShooting(bool state)
     {
-        animator.SetFloat("moveX", speed.x, 0.1f, Time.deltaTime);
-        animator.SetFloat("moveY", speed.y, 0.1f, Time.deltaTime);
+        animator.SetBool("IsShooting", state);
     }
+
+    public void IsPlayerReload(bool state)
+    {
+        animator.SetBool("IsReloading", state);
+    }
+
+    public void HasReloaded(bool state)
+    {
+        animator.SetBool("HasReloaded", state);
+    }
+
 }

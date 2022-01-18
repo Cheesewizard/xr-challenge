@@ -1,97 +1,98 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyAnimatorController : MonoBehaviour
 {
     private Animator animator;
-
-    [Header("Effects")]
-    [SerializeField]
-    private ParticleSystem deathEffect;
-    [SerializeField]
-    private ParticleSystem superDeathEffect;
-    [SerializeField]
-    private ParticleSystem damageEffect;
-
-    public float particleHeightOffset;
-
+    private EnemyAnimator animatorEffects;
 
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
+        animatorEffects = GetComponent<EnemyAnimator>();
+
+        // Setup ragdoll physics on enemy
+        SetRigidBodyState(true);
+        SetColliderState(false);
     }
 
-    private void OnEnable()
+    public void Kill(float gunForce, float forceRadius)
     {
-        // Register events
-        AnimatorEventManager.Instance.OnEnemyDeath += Kill;
-        AnimatorEventManager.Instance.OnSuperEnemyDeath += KillSuper;
-        AnimatorEventManager.Instance.OnEnemyRun += IsRunning;
-        AnimatorEventManager.Instance.OnEnemyWalk += IsWalking;
-        AnimatorEventManager.Instance.OnEnemySpeedChange += SetMoveSpeed;
-        AnimatorEventManager.Instance.OnEnemyAttack += IsAttacking;
-        AnimatorEventManager.Instance.OnEnemyDamage += IsHurt;
-    }
-
-    private void OnDisable()
-    {
-        AnimatorEventManager.Instance.OnEnemyDeath -= Kill;
-        AnimatorEventManager.Instance.OnSuperEnemyDeath -= KillSuper;
-        AnimatorEventManager.Instance.OnEnemyRun -= IsRunning;
-        AnimatorEventManager.Instance.OnEnemyWalk -= IsWalking;
-        AnimatorEventManager.Instance.OnEnemySpeedChange -= SetMoveSpeed;
-        AnimatorEventManager.Instance.OnEnemyAttack -= IsAttacking;
-        AnimatorEventManager.Instance.OnEnemyDamage -= IsHurt;
-    }
-
-
-    private void SpawnParticleEffectAt(ParticleSystem particle, Transform target, float height)
-    {
-        // Some enemies may have pivot points at the feet rather than the center, so one can adjust it now
-        var position = new Vector3(target.position.x, transform.position.y * height, transform.position.z);
-
-        // Create particle effect at the enemy position
-        Instantiate(particle, position, Quaternion.identity).Play();
-    }
-
-    public void Kill(Enemy enemy)
-    {
-        SpawnParticleEffectAt(deathEffect, enemy.transform, particleHeightOffset);
+        animatorEffects.PlayDeath();
         animator.SetTrigger("IsDead");
-    }
 
-    public void KillSuper(Enemy enemy)
-    {
-        SpawnParticleEffectAt(superDeathEffect, enemy.transform, particleHeightOffset);
-        animator.SetTrigger("IsDead");
+        // Enable ragdoll physics
+        animator.enabled = false;
+        SetRigidBodyState(false);
+        SetColliderState(true);
+        AppplyForce(gunForce, forceRadius);
+
+        Destroy(gameObject, 20f);
     }
 
     public void IsRunning(bool state)
     {
-        animator.SetBool("IsRunning", state);
+        animator.SetTrigger("IsRunning");
     }
 
-    public void IsHurt(Enemy enemy, float amount)
+    public void IsHurt()
     {
-        SpawnParticleEffectAt(damageEffect, enemy.transform, particleHeightOffset);
+        animatorEffects.PlayHit();
         animator.SetTrigger("IsHurt");
     }
 
     public void IsWalking(bool state)
     {
-        animator.SetBool("IsWalking", state);
+        animator.SetTrigger("IsWalking");
     }
 
     public void IsAttacking(bool state)
     {
-        animator.SetBool("IsAttacking", state);
+        animator.SetTrigger("IsAttacking");
+    }
+
+    public void SetMoveSpeed(Vector3 speed)
+    {
+        // Make this use magnitude instead to determine zombie speed
+        animator.SetTrigger("moveX");
+        animator.SetTrigger("moveZ");
+    }
+
+    private void SetRigidBodyState(bool state)
+    {
+        Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
+        foreach (var rigidbody in rigidbodies)
+        {
+            rigidbody.isKinematic = state;
+        }
+
+        GetComponent<Rigidbody>().isKinematic = !state;
     }
 
 
-    public void SetMoveSpeed(Vector2 speed)
+    private void SetColliderState(bool state)
     {
-        // Make this use magnitude instead to determine zombie speed
-        animator.SetFloat("moveX", speed.x, 0.1f, Time.deltaTime);
-        animator.SetFloat("moveY", speed.y, 0.1f, Time.deltaTime);
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        foreach (var collider in colliders)
+        {
+            collider.enabled = state;
+        }
+
+        GetComponent<Collider>().enabled = !state;
+    }
+
+    private void AppplyForce(float force, float forceRadius)
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, forceRadius);
+        foreach (var collider in colliders)
+        {
+            Rigidbody rigidbody = GetComponent<Rigidbody>();
+            if(rigidbody != null)
+            {
+                rigidbody.AddExplosionForce(force, transform.position, forceRadius);
+            }
+        } 
     }
 }

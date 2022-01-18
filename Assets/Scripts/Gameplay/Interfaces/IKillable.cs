@@ -1,4 +1,4 @@
 public interface IKillable
 {
-    public void Death();
+    public void Death(float gunForce, float forceRadius);
 }

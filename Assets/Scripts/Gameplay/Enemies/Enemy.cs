@@ -4,21 +4,27 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IKillable
 {
     public float Health;
     public float Power;
+    public float Speed;
+    public bool IsDead;
 
-    public virtual void TakeDamage(float amount)
+    public virtual void TakeDamage(float amount, float gunForce, float forceRadius)
     {
-        Health -= amount;
-        AnimatorEventManager.Instance.EnemyDamage(this, amount);
-
-        if (Health <= 0)
+        if (!IsDead)
         {
-            Death();
+            Health -= amount;
+            AnimatorEventManager.Instance.EnemyDamage(this, amount);
+
+            if (Health <= 0)
+            {
+                Death(gunForce, forceRadius);
+            }
         }
     }
 
-    public virtual void Death()
+    public virtual void Death(float gunForce, float forceRadius)
     {
-        AnimatorEventManager.Instance.EnemyDeath(this);
+        IsDead = true;
+        AnimatorEventManager.Instance.EnemyDeath(this, gunForce, forceRadius);
     }
 
 }

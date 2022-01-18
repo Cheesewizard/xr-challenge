@@ -13,12 +13,4 @@ public class SuperZombie : Enemy
     {
         OnSuperZombieDeath -= AchievementManager.Instance.SuperZombieAchievement;
     }
-
-    public override void Death()
-    { 
-        // Explode when dead, instead of dying normally.
-
-        AnimatorEventManager.Instance.SuperEnemyDeath(this);
-        OnSuperZombieDeath?.Invoke();
-    }
 }

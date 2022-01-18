@@ -24,7 +24,6 @@ public class StatsManager : MonoBehaviour
     private void OnEnable()
     {
         AnimatorEventManager.Instance.OnEnemyDeath += Instance.UpdateEnemiesKilled;
-        AnimatorEventManager.Instance.OnSuperEnemyDeath += Instance.UpdateEnemiesKilled;
         AnimatorEventManager.Instance.OnEnemyDamage += Instance.UpdateDamageGiven;
     }
 
@@ -32,7 +31,6 @@ public class StatsManager : MonoBehaviour
     private void OnDisable()
     {
         AnimatorEventManager.Instance.OnEnemyDeath -= Instance.UpdateEnemiesKilled;
-        AnimatorEventManager.Instance.OnSuperEnemyDeath -= Instance.UpdateEnemiesKilled;
         AnimatorEventManager.Instance.OnEnemyDamage -= Instance.UpdateDamageGiven;
     }
 

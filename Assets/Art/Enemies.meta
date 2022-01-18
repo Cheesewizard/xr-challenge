@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Art/Enemies.meta
 guid: c4ef8dc32a47b194e9be0e5ec06bb089
+=======
+guid: 51921c3b07d12004da5d1b380e240e08
+>>>>>>> 49570ed6b0871f47041be1959646a1114be46889:Assets/Art/Bullets.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

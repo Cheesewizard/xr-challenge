@@ -91,7 +91,8 @@ public class EnemyAnimatorController : MonoBehaviour
             Rigidbody rigidbody = GetComponent<Rigidbody>();
             if(rigidbody != null)
             {
-                rigidbody.AddExplosionForce(force, transform.position, forceRadius);
+                // rigidbody.AddExplosionForce(force, transform.position, forceRadius);
+                rigidbody.AddExplosionForce(force, transform.position, forceRadius, force * 0.2f, ForceMode.Impulse);
             }
         } 
     }

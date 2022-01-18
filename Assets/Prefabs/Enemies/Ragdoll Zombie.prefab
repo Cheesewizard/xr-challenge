@@ -2334,7 +2334,7 @@ MonoBehaviour:
     type: 3}
   damageEffect:
   - {fileID: 19800004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 3}
-  - {fileID: 198330214428362902, guid: a97415c6b57076f41a6621a7b51d63a3, type: 3}
+  - {fileID: 19800000, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
   particleHeightOffset: 1
 --- !u!136 &7084547412615758894
 CapsuleCollider:

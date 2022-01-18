@@ -5,7 +5,7 @@ using UnityEngine;
 public class SignalHasReloaded : StateMachineBehaviour
 {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         AnimatorEventManager.Instance.PlayerHasReloaded(true);
     }

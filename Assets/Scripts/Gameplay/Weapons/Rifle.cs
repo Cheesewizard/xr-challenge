@@ -18,6 +18,11 @@ public class Rifle : Gun
 
     private void ProcessInputs()
     {
+        if (isReloading)
+        {
+            return;
+        }
+
         CheckForReload();
         if (AimGun())
         {

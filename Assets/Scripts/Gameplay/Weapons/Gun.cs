@@ -24,41 +24,47 @@ public abstract class Gun : MonoBehaviour
     public Transform gunPosition;
 
     [Header("Gun Variables")]
-    public float shootDelay = 0.5f;
+    public float fireRate = 0.5f;
     public int damage = 10;
     public float gunForce = 100f;
     public float forceRadius = 50f;
+
     public int totalAmmunition;
     public int costPerBullet = 1;
 
-    public readonly int clipSize = 32;
-    private int currentAmmoClip;
-
+    public int clipSize = 32;
+    public int currentAmmoClip;
+    public float reloadTime = 1.5f;
 
     // Used to cause bullet delays before firing again
-    private float lastShootTime;
+    private float nextTimeToFire;
+    public bool isReloading;
 
     private void Start()
     {
         // Start with full ammo
-        totalAmmunition = clipSize;
+        currentAmmoClip = clipSize;
     }
 
 
     public bool FireGun()
     {
-        if (Input.GetButton("Fire1"))
+        if (Time.time >= nextTimeToFire)
         {
-            // Set Player shooting animation
-            AnimatorEventManager.Instance.PlayerShoot(true);
-            return true;
-        }
+            if (Input.GetButton("Fire1") && currentAmmoClip > 0)
+            {
+                // Sets a delay on how much you can fire the gun
+                nextTimeToFire = Time.time + fireRate * 0.5f;
 
+                // Set Player shooting animation
+                AnimatorEventManager.Instance.PlayerShoot(true);
+                return true;
+            }
+        }
         // When released set player shooting to false
         AnimatorEventManager.Instance.PlayerShoot(false);
         return false;
     }
-
     public bool AimGun()
     {
         var aimPressed = Input.GetButton("Fire2");
@@ -83,27 +89,21 @@ public abstract class Gun : MonoBehaviour
             direction = gunPosition.transform.up;
         }
 
-        // Sets a delay on how much you can fire the gun
-        if (lastShootTime + shootDelay < Time.time)
+        // Not clean code
+        muzleFlashParticleEffect.Play();
+
+        if (Physics.Raycast(gunPosition.transform.position, direction, out RaycastHit hit, float.MaxValue, layerMask))
         {
-            // Not clean code
-            // muzleFlashParticleEffect.Play();
+            var trail = Instantiate(bulletEffect, gunPosition.transform.position, Quaternion.identity);
 
-            if (Physics.Raycast(gunPosition.transform.position, direction, out RaycastHit hit, float.MaxValue, layerMask))
+            // Spawn a hit effect at the point the trail hits the raycast point
+            StartCoroutine(SpawnBulletEffect(trail, hit, impactParticleEffect));
+
+            var target = hit.transform.GetComponent<IDamageable>();
+
+            if (target != null)
             {
-                var trail = Instantiate(bulletEffect, gunPosition.transform.position, Quaternion.identity);
-
-                // Spawn a hit effect at the point the trail hits the raycast point
-                StartCoroutine(SpawnBulletEffect(trail, hit, impactParticleEffect));
-                lastShootTime = Time.time;
-
-
-                var target = hit.transform.GetComponent<IDamageable>();
-
-                if (target != null)
-                {
-                    target.TakeDamage(damage, gunForce, forceRadius);
-                }
+                target.TakeDamage(damage, gunForce, forceRadius);
             }
         }
     }
@@ -134,53 +134,75 @@ public abstract class Gun : MonoBehaviour
         // This logic does not take into account at what point in the animation do we give the player their ammo back
         if (Input.GetKeyDown(KeyCode.R))
         {
-            DoReload();
+            StartCoroutine(DoReload());
         }
     }
 
-    public void DoReload()
+    public IEnumerator DoReload()
     {
-        if (CanReloadFromAmmo())
+        // This flow should be improved
+
+        if (CheckIfCanReload())
         {
+            isReloading = true;
             AnimatorEventManager.Instance.PlayerReload(true);
             AnimatorEventManager.Instance.PlayerHasReloaded(false);
-            return;
+                  
+            // Wait for x seconds
+            yield return new WaitForSeconds(reloadTime);
+            ReloadFromAmmo();
+            AnimatorEventManager.Instance.PlayerReload(false);
+            isReloading = false;
         }
 
-        AnimatorEventManager.Instance.PlayerReload(false);
-    }
+        yield return new WaitForSeconds(0);
 
-    private bool CanReloadFromAmmo()
+    }
+    private bool CheckIfCanReload()
     {
         if (currentAmmoClip < clipSize && totalAmmunition > 1)
         {
-            var emptyBulletSlots = clipSize - currentAmmoClip;
-
-            // There exists enough bullets in our ammo pile
-            if (totalAmmunition % emptyBulletSlots >= 0)
-            {
-                totalAmmunition = clipSize;
-                totalAmmunition -= emptyBulletSlots;
-            }
-            else
-            {
-                // Add teh remaining amound of our ammo pile to our current ammo clip
-                currentAmmoClip += totalAmmunition;
-                totalAmmunition -= totalAmmunition;
-            }
-
             return true;
         }
-
         return false;
+    }
+
+    private void ReloadFromAmmo()
+    {
+        if (currentAmmoClip < 0)
+        {
+            // This would indicate an empty clip
+            currentAmmoClip = 0;
+        }
+
+        var emptyBulletSlots = clipSize - currentAmmoClip;
+
+        // There exists enough bullets in our ammo pile
+        if (totalAmmunition / emptyBulletSlots >= 1)
+        {
+            // Add the remaining bullets, to fill up the clip to full
+            currentAmmoClip = clipSize;
+            totalAmmunition -= emptyBulletSlots;
+        }
+        else
+        {
+            // Add the remaining amound of our ammo pile to our current ammo clip
+            currentAmmoClip += totalAmmunition;
+            totalAmmunition -= totalAmmunition;
+        }
     }
 
     public virtual void DecreaseAmmo()
     {
+        if (isReloading)
+        {
+            return;
+        }
+
         currentAmmoClip -= 1;
         if (currentAmmoClip <= 0)
         {
-            DoReload();
+            StartCoroutine(DoReload());
         }
     }
 

@@ -139,13 +139,16 @@ MonoBehaviour:
     type: 3}
   bulletEffect: {fileID: 0}
   gunPosition: {fileID: 0}
-  shootDelay: 0.1
+  fireRate: 0.26
   damage: 5
   gunForce: 500
   forceRadius: 100
-  totalAmmunition: 0
-  costPerBullet: 2
-  lastShootTime: 0
+  totalAmmunition: 100
+  costPerBullet: 1
+  clipSize: 32
+  currentAmmoClip: 0
+  reloadTime: 1.4
+  isReloading: 0
   addBulletSpread: 1
   bulletSpreadVariance: {x: 0.1, y: 0.1, z: 0.1}
 --- !u!1 &3661176859938162619

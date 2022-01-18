@@ -15,6 +15,10 @@ public class CharacterController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        //Set cursor to not be visible and constrain within the game window
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Confined;
     }
 
     // Update is called once per frame
@@ -28,7 +32,7 @@ public class CharacterController : MonoBehaviour
         Jumping();
         Running();
         Walking();
-        MoveCharacter();  
+        MoveCharacter();
     }
 
     private void MoveCharacter()
@@ -46,11 +50,11 @@ public class CharacterController : MonoBehaviour
         {
             position.Normalize();
 
-             transform.Translate(position *= movementSpeed * Time.deltaTime, Space.World);
+            transform.Translate(position *= movementSpeed * Time.deltaTime, Space.World);
             //rb.MovePosition(transform.position + position * Time.deltaTime * movementSpeed);
 
             //Quaternion newDir = Quaternion.LookRotation(position);
-           // Quaternion.Slerp(transform.rotation, newDir, Time.deltaTime * turnSpeed);
+            // Quaternion.Slerp(transform.rotation, newDir, Time.deltaTime * turnSpeed);
         }
 
         var velocityX = Vector3.Dot(position.normalized, transform.forward);
@@ -75,7 +79,7 @@ public class CharacterController : MonoBehaviour
     }
 
 
- 
+
     // Check if the character is on the ground
     void OnCollisionEnter(Collision collider)
     {
@@ -95,7 +99,7 @@ public class CharacterController : MonoBehaviour
         // Check if jumping
         if (jumpPressed && isOnGround)
         {
-  
+
             AnimatorEventManager.Instance.PlayerJump(true);
             rb.AddForce(Vector3.up * jumpForce * Time.deltaTime, ForceMode.Impulse);
             isOnGround = false;

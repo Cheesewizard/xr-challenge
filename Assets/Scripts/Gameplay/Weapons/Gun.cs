@@ -1,115 +1,104 @@
 using System.Collections;
 using UnityEngine;
 
-public class Gun : MonoBehaviour
+public abstract class Gun : MonoBehaviour
 {
+    [Header("RayCast")]
     [SerializeField]
     private Camera cam;
+
     [SerializeField]
     private LayerMask layerMask;
 
-    public int damage = 10;
-    public float gunForce = 100f;
-    public float forceRadius = 50f;
-
+    [Header("Effects")]
     [SerializeField]
-    private GameObject gunPosition;
-
-    [SerializeField]
-    private bool AddBulletSpread = true;
-
-    [SerializeField]
-    private Vector3 BulletSpreadVarience = new Vector3(0.1f, 0.1f, 0.1f);
-
-    [SerializeField]
-    private bool ShootingSystem = true;
-
-    [SerializeField]
-    private TrailRenderer BulletTrail;
-
-    [SerializeField]
-    private float ShootDelay = 0.5f;
-
-    [SerializeField]
-    private ParticleSystem ImpactParticleSystem;
+    private ParticleSystem impactParticleEffect;
 
     [SerializeField]
     private ParticleSystem muzleFlashParticleEffect;
 
     [SerializeField]
-    private float LastShootTime;
+    private TrailRenderer bulletEffect;
+
+    [Header("Gun Position")]
+    public Transform gunPosition;
+
+    [Header("Gun Variables")]
+    public float shootDelay = 0.5f;
+    public int damage = 10;
+    public float gunForce = 100f;
+    public float forceRadius = 50f;
+    public int totalAmmunition;
+    public int costPerBullet = 1;
+
+    public readonly int clipSize = 32;
+    private int currentAmmoClip;
 
 
+    // Used to cause bullet delays before firing again
+    private float lastShootTime;
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        ProcessInputs();
+        // Start with full ammo
+        totalAmmunition = clipSize;
     }
 
-    private void ProcessInputs()
-    {
-        Reload();
-        AimGun();
-    }
 
-
-    public void FireGun()
+    public bool FireGun()
     {
         if (Input.GetButton("Fire1"))
         {
-            // Shoot
-            Shoot();
-            DecreaseAmmo();
+            // Set Player shooting animation
             AnimatorEventManager.Instance.PlayerShoot(true);
-            return;
+            return true;
         }
 
         // When released set player shooting to false
-        if (Input.GetButtonUp("Fire1"))
-        {
-            AnimatorEventManager.Instance.PlayerShoot(false);
-        }
+        AnimatorEventManager.Instance.PlayerShoot(false);
+        return false;
     }
 
-    public void AimGun()
+    public bool AimGun()
     {
         var aimPressed = Input.GetButton("Fire2");
         if (aimPressed)
         {
-            // Lazer sight
             // Aim animation
             AnimatorEventManager.Instance.PlayerAiming(true);
-            FireGun();
+            return true;
         }
 
         // When released set player aiming to false
-        if (Input.GetButtonUp("Fire2"))
-        {
-            AnimatorEventManager.Instance.PlayerAiming(false);
-        }
+        AnimatorEventManager.Instance.PlayerAiming(false);
+        AnimatorEventManager.Instance.PlayerShoot(false);
+
+        return false;
     }
-
-    private void Shoot()
+    public void Shoot(Vector3 direction, Transform gunPosition)
     {
-        if (LastShootTime + ShootDelay < Time.time)
+        if (direction == Vector3.zero)
         {
-            Debug.DrawRay(gunPosition.transform.position, gunPosition.transform.up * 200f, Color.green);
+            // Get the direction facing from the gun barrel, not been adjusted
+            direction = gunPosition.transform.up;
+        }
 
+        // Sets a delay on how much you can fire the gun
+        if (lastShootTime + shootDelay < Time.time)
+        {
             // Not clean code
-            muzleFlashParticleEffect.Play();
+            // muzleFlashParticleEffect.Play();
 
-            var direction = GetDirection(); //gunPosition.transform.up;
             if (Physics.Raycast(gunPosition.transform.position, direction, out RaycastHit hit, float.MaxValue, layerMask))
             {
-                TrailRenderer trail = Instantiate(BulletTrail, gunPosition.transform.position, Quaternion.identity);
+                var trail = Instantiate(bulletEffect, gunPosition.transform.position, Quaternion.identity);
 
-                StartCoroutine(SpawnTrail(trail, hit));
-                LastShootTime = Time.time;
+                // Spawn a hit effect at the point the trail hits the raycast point
+                StartCoroutine(SpawnBulletEffect(trail, hit, impactParticleEffect));
+                lastShootTime = Time.time;
 
 
-                Debug.Log(hit.transform.name);
-                var target = hit.transform.GetComponent<Enemy>();
+                var target = hit.transform.GetComponent<IDamageable>();
 
                 if (target != null)
                 {
@@ -119,32 +108,14 @@ public class Gun : MonoBehaviour
         }
     }
 
-    private Vector3 GetDirection()
+    public IEnumerator SpawnBulletEffect(TrailRenderer trail, RaycastHit hit, ParticleSystem impactParticleEffect)
     {
-        Vector3 direction = gunPosition.transform.up;
-
-        if (AddBulletSpread)
-        {
-            direction += new Vector3(
-
-                Random.Range(-BulletSpreadVarience.x, BulletSpreadVarience.x),
-                 Random.Range(-BulletSpreadVarience.y, BulletSpreadVarience.y),
-                  Random.Range(-BulletSpreadVarience.z, BulletSpreadVarience.z)
-                  );
-
-            direction.Normalize();
-        }
-
-        return direction;
-    }
-
-    private IEnumerator SpawnTrail(TrailRenderer trail, RaycastHit hit)
-    {
-        float time = 0;
+        var time = 0f;
         Vector3 startPosition = trail.transform.position;
 
         while (time < 1)
         {
+            // Animate the trail between two points
             trail.transform.position = Vector3.Lerp(startPosition, hit.point, time);
             time += Time.deltaTime / trail.time;
 
@@ -152,20 +123,24 @@ public class Gun : MonoBehaviour
         }
 
         trail.transform.position = hit.point;
-        Instantiate(ImpactParticleSystem, hit.point, Quaternion.LookRotation(hit.normal));
 
+        // Spawn hit effect
+        Instantiate(impactParticleEffect, hit.point, Quaternion.LookRotation(hit.normal));
         Destroy(trail.gameObject, trail.time);
-
     }
 
-    private void LazerSight()
+    public void CheckForReload()
     {
-
-    }
-
-    public void Reload()
-    {
+        // This logic does not take into account at what point in the animation do we give the player their ammo back
         if (Input.GetKeyDown(KeyCode.R))
+        {
+            DoReload();
+        }
+    }
+
+    public void DoReload()
+    {
+        if (CanReloadFromAmmo())
         {
             AnimatorEventManager.Instance.PlayerReload(true);
             AnimatorEventManager.Instance.PlayerHasReloaded(false);
@@ -175,13 +150,43 @@ public class Gun : MonoBehaviour
         AnimatorEventManager.Instance.PlayerReload(false);
     }
 
-    public void DecreaseAmmo()
+    private bool CanReloadFromAmmo()
     {
+        if (currentAmmoClip < clipSize && totalAmmunition > 1)
+        {
+            var emptyBulletSlots = clipSize - currentAmmoClip;
 
+            // There exists enough bullets in our ammo pile
+            if (totalAmmunition % emptyBulletSlots >= 0)
+            {
+                totalAmmunition = clipSize;
+                totalAmmunition -= emptyBulletSlots;
+            }
+            else
+            {
+                // Add teh remaining amound of our ammo pile to our current ammo clip
+                currentAmmoClip += totalAmmunition;
+                totalAmmunition -= totalAmmunition;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
-    public void AddAmmo()
+    public virtual void DecreaseAmmo()
     {
+        currentAmmoClip -= 1;
+        if (currentAmmoClip <= 0)
+        {
+            DoReload();
+        }
+    }
 
+
+    public void AddAmmo(int ammoAmount)
+    {
+        totalAmmunition += ammoAmount;
     }
 }

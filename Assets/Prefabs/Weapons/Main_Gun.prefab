@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 3661176859904096333}
   - component: {fileID: 3661176859900704877}
   - component: {fileID: 3661176859901803181}
+  - component: {fileID: 4856866600898563380}
   m_Layer: 0
   m_Name: Main_Gun
   m_TagString: Untagged
@@ -57,7 +58,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3661176859903730797}
-  m_LocalRotation: {x: -0.093313776, y: 0.76582575, z: 0.6331705, w: -0.0624394}
+  m_LocalRotation: {x: 0.09331144, y: -0.7658261, z: -0.63316995, w: 0.06244322}
   m_LocalPosition: {x: -0.007, y: 0.045, z: 0.184}
   m_LocalScale: {x: 0.8447195, y: 0.8447204, z: 0.84471935}
   m_Children:
@@ -116,6 +117,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4856866600898563380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3661176859903730797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab75293941926c545a44333659ec1eac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 0}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 2147483647
+  impactParticleEffect: {fileID: 19800000, guid: f2dba9e16cd347f44a395b8204544ee5,
+    type: 3}
+  muzleFlashParticleEffect: {fileID: 19800004, guid: fb7b0526ade434043b350a180d741cf3,
+    type: 3}
+  bulletEffect: {fileID: 0}
+  gunPosition: {fileID: 0}
+  shootDelay: 0.1
+  damage: 5
+  gunForce: 500
+  forceRadius: 100
+  totalAmmunition: 0
+  costPerBullet: 2
+  lastShootTime: 0
+  addBulletSpread: 1
+  bulletSpreadVariance: {x: 0.1, y: 0.1, z: 0.1}
 --- !u!1 &3661176859938162619
 GameObject:
   m_ObjectHideFlags: 0

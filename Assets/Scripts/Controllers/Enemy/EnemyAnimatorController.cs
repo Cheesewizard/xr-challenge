@@ -6,16 +6,12 @@ public class EnemyAnimatorController : MonoBehaviour
 {
     private Animator animator;
     private EnemyAnimator animatorEffects;
-    private ZombieAIController aiController;
 
     // Start is called before the first frame update
     void Start()
     {
-        // Sound effects here
-        // audioController = 
         animator = GetComponent<Animator>();
         animatorEffects = GetComponent<EnemyAnimator>();
-        aiController = GetComponent<ZombieAIController>();
 
         // Setup ragdoll physics on enemy
         SetRigidBodyState(true);
@@ -33,8 +29,12 @@ public class EnemyAnimatorController : MonoBehaviour
         SetColliderState(true);
         AppplyForce(gunForce, forceRadius);
 
-        Destroy(aiController);
-        Destroy(gameObject, 30f);
+        Destroy(gameObject, 20f);
+    }
+
+    public void IsRunning(bool state)
+    {
+        animator.SetTrigger("IsRunning");
     }
 
     public void IsHurt()
@@ -43,14 +43,21 @@ public class EnemyAnimatorController : MonoBehaviour
         animator.SetTrigger("IsHurt");
     }
 
-    public void IsWalking(float speed)
+    public void IsWalking(bool state)
     {
-        animator.SetFloat("speed", speed);
+        animator.SetTrigger("IsWalking");
     }
 
-    public void IsAttacking()
+    public void IsAttacking(bool state)
     {
         animator.SetTrigger("IsAttacking");
+    }
+
+    public void SetMoveSpeed(Vector3 speed)
+    {
+        // Make this use magnitude instead to determine zombie speed
+        animator.SetTrigger("moveX");
+        animator.SetTrigger("moveZ");
     }
 
     private void SetRigidBodyState(bool state)

@@ -4051,11 +4051,11 @@ GameObject:
   - component: {fileID: 5041576781148582755}
   - component: {fileID: 4605784058234856705}
   - component: {fileID: 7420133834399468879}
+  - component: {fileID: 58072972702827613}
   - component: {fileID: 5203028232291182494}
   - component: {fileID: 5479900690976861100}
   - component: {fileID: 5936541405939450357}
-  - component: {fileID: 5945496192245876516}
-  - component: {fileID: 394278204}
+  - component: {fileID: 2940227636869743707}
   m_Layer: 0
   m_Name: Super_Zombie
   m_TagString: Untagged
@@ -4111,7 +4111,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5041576781155828041}
   serializedVersion: 2
-  m_Mass: 60
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -4131,6 +4131,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0792f7381e8d11b409861e7c622f3f16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &58072972702827613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5041576781155828041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b897b5d548b438c41ae7c8f8cb5d04fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 4010452645657081727, guid: 55cafd11e2a99c84a91efa640ee94ec1, type: 3}
+  speed: 5
 --- !u!114 &5203028232291182494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4176,33 +4190,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Health: 100
-  Power: 20
+  Power: 0
   Speed: 0
   IsDead: 0
-  damageEffect: {fileID: 0}
---- !u!195 &5945496192245876516
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5041576781155828041}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 0.1
-  m_Acceleration: 2
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 2
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
-  m_AutoRepath: 1
-  m_Height: 2
-  m_BaseOffset: 0
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
---- !u!114 &394278204
+--- !u!114 &2940227636869743707
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4211,15 +4202,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5041576781155828041}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39d15cbcf20160e46bd3ef543a3f47ff, type: 3}
+  m_Script: {fileID: 11500000, guid: cd179cdb1abb3c045a5afa409dfa7723, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agent: {fileID: 5945496192245876516}
-  range: 5
-  aggroRange: 10
-  startPos: {x: 0, y: 0, z: 0}
-  attackDelay: 3
-  attackDistance: 1
+  aggroRange: 5
+  target: {fileID: 4010452645657081727, guid: 55cafd11e2a99c84a91efa640ee94ec1, type: 3}
+  targetInRangeDelay: 5
 --- !u!1 &5041576781155828043
 GameObject:
   m_ObjectHideFlags: 0

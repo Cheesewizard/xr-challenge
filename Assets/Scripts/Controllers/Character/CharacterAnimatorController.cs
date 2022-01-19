@@ -3,22 +3,26 @@ using UnityEngine;
 public class CharacterAnimatorController : MonoBehaviour
 {
     private Animator animator;
+    private CharacterController characterController;
+    private LookAtMouse lookAtMouse;
 
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
+        characterController = GetComponent<CharacterController>();
+        lookAtMouse = GetComponent<LookAtMouse>();
     }
 
     private void OnEnable()
     {
         // Register events
-    
+
         AnimatorEventManager.Instance.OnPlayerRun += IsRunning;
-        AnimatorEventManager.Instance.OnPlayerWalk += IsWalking;     
+        AnimatorEventManager.Instance.OnPlayerWalk += IsWalking;
         AnimatorEventManager.Instance.OnPlayerJump += IsJumping;
         AnimatorEventManager.Instance.OnPlayerTouchGround += IsOnGround;
-        
+
         AnimatorEventManager.Instance.OnPlayerSpeedChange += SetMoveSpeed;
 
         AnimatorEventManager.Instance.OnPlayerDeath += Kill;
@@ -31,9 +35,9 @@ public class CharacterAnimatorController : MonoBehaviour
     }
 
     private void OnDisable()
-    {    
+    {
         AnimatorEventManager.Instance.OnPlayerRun -= IsRunning;
-        AnimatorEventManager.Instance.OnPlayerWalk -= IsWalking; 
+        AnimatorEventManager.Instance.OnPlayerWalk -= IsWalking;
         AnimatorEventManager.Instance.OnPlayerJump -= IsJumping;
         AnimatorEventManager.Instance.OnPlayerTouchGround -= IsOnGround;
         AnimatorEventManager.Instance.OnPlayerSpeedChange -= SetMoveSpeed;
@@ -84,6 +88,8 @@ public class CharacterAnimatorController : MonoBehaviour
     }
     public void Kill()
     {
+        characterController.enabled = false;
+        lookAtMouse.enabled = false;
         animator.SetTrigger("IsDead");
     }
 

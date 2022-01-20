@@ -23,7 +23,7 @@ public class AnimatorEventManager : MonoBehaviour
 
 
     // Player
-  
+
     // Movement
     public event Action<bool> OnPlayerRun;
     public event Action<bool> OnPlayerWalk;
@@ -36,7 +36,7 @@ public class AnimatorEventManager : MonoBehaviour
     public event Action OnPlayerDeath;
 
     // Weapon
-    public event Action<bool> OnPlayerReload;
+    public event Action OnPlayerReload;
     public event Action<bool> OnPlayerHasReloaded;
     public event Action<bool> OnPlayerAim;
     public event Action<bool> OnPlayerShoot;
@@ -89,9 +89,9 @@ public class AnimatorEventManager : MonoBehaviour
         OnPlayerAim?.Invoke(state);
     }
 
-    public void PlayerReload(bool state)
+    public void PlayerReload()
     {
-        OnPlayerReload?.Invoke(state);
+        OnPlayerReload?.Invoke();
     }
 
     public void PlayerHasReloaded(bool state)
@@ -105,11 +105,11 @@ public class AnimatorEventManager : MonoBehaviour
     // Enemies
     public event Action<Enemy> OnEnemyDeath;
     public event Action<bool> OnEnemyRun;
-    public event Action<bool> OnEnemyWalk;
-    public event Action<bool> OnEnemyAttack;
+    public event Action<float> OnEnemyWalk;
+    public event Action<Enemy> OnEnemyAttack;
     public event Action<Vector3> OnEnemySpeedChange;
     public event Action<Enemy, float> OnEnemyDamage;
-
+    public event Action<float> OnEnemyMove;
 
     public void EnemyDeath(Enemy enemy, float gunForce, float forceRadius)
     {
@@ -123,6 +123,20 @@ public class AnimatorEventManager : MonoBehaviour
         var enemyAnimatorController = enemy.GetComponent<EnemyAnimatorController>();
         enemyAnimatorController.IsHurt();
         OnEnemyDamage?.Invoke(enemy, amount);
+    }
+
+    public void EnemyMove(Enemy enemy, float speed)
+    {
+        var enemyAnimatorController = enemy.GetComponent<EnemyAnimatorController>();
+        enemyAnimatorController.IsWalking(speed);
+        OnEnemyWalk?.Invoke(speed);
+    }
+
+    public void EnemyAttack(Enemy enemy)
+    {
+        var enemyAnimatorController = enemy.GetComponent<EnemyAnimatorController>();
+        enemyAnimatorController.IsAttacking();
+        OnEnemyAttack?.Invoke(enemy);
     }
 
     //// Register events

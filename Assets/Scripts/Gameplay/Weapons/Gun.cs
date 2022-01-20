@@ -145,13 +145,12 @@ public abstract class Gun : MonoBehaviour
         if (CheckIfCanReload())
         {
             isReloading = true;
-            AnimatorEventManager.Instance.PlayerReload(true);
+            AnimatorEventManager.Instance.PlayerReload();
             AnimatorEventManager.Instance.PlayerHasReloaded(false);
                   
             // Wait for x seconds
             yield return new WaitForSeconds(reloadTime);
             ReloadFromAmmo();
-            AnimatorEventManager.Instance.PlayerReload(false);
             isReloading = false;
         }
 

@@ -54,7 +54,7 @@ public class CharacterController : MonoBehaviour
             //rb.MovePosition(transform.position + position * Time.deltaTime * movementSpeed);
 
             //Quaternion newDir = Quaternion.LookRotation(position);
-            // Quaternion.Slerp(transform.rotation, newDir, Time.deltaTime * turnSpeed);
+            //Quaternion.Slerp(transform.rotation, newDir, Time.deltaTime * turnSpeed);
         }
 
         var velocityX = Vector3.Dot(position.normalized, transform.forward);
@@ -77,8 +77,6 @@ public class CharacterController : MonoBehaviour
 
         AnimatorEventManager.Instance.PlayerWalk(false);
     }
-
-
 
     // Check if the character is on the ground
     void OnCollisionEnter(Collision collider)

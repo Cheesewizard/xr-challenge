@@ -29,7 +29,12 @@ public class Rifle : Gun
             if (FireGun())
             {
                 Shoot(GetDirection(), bulletsSpawn);
+
                 DecreaseAmmo();
+                if (currentAmmoClip <= 0)
+                {
+                    StartCoroutine(DoReload());
+                }
             }
         }
     }
@@ -55,7 +60,7 @@ public class Rifle : Gun
 
     private void LazerSight()
     {
-
+        // To Implement
     }
 
     private void OnCollisionEnter(Collision collision)

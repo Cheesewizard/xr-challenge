@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &49061586488988346
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 117405644892805253}
+  m_Layer: 0
+  m_Name: Attack Origin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &117405644892805253
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 49061586488988346}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00003, y: 0.00605, z: -0.00006}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7758186678310073203}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7564425233357394017
 GameObject:
   m_ObjectHideFlags: 0
@@ -337,7 +367,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 11deda9a2ce04bf47a65f12b3fe4f41a, type: 2}
+  - {fileID: 2100000, guid: 68fd1c4a7fc6f1c45bacc15b81dc5115, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -618,6 +648,7 @@ Transform:
   m_LocalScale: {x: 1, y: 0.99999994, z: 1}
   m_Children:
   - {fileID: 7758186678310073111}
+  - {fileID: 117405644892805253}
   m_Father: {fileID: 7758186678310073167}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -796,7 +827,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7fb5b7b4daec2254baa1da46b77a079d, type: 2}
+  - {fileID: 2100000, guid: 7dd8c66591d0709468cb53bf8293742f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1165,7 +1196,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8037d301b260d214fbea59e83e088904, type: 2}
+  - {fileID: 2100000, guid: c3a746e28927ec443805e7c7682bd252, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2258,6 +2289,7 @@ GameObject:
   - component: {fileID: 7983128360589699091}
   - component: {fileID: 279605707085331614}
   - component: {fileID: 4927125886887885590}
+  - component: {fileID: -1227662530930145202}
   m_Layer: 0
   m_Name: Ragdoll Zombie
   m_TagString: Untagged
@@ -2382,6 +2414,8 @@ MonoBehaviour:
   damageEffect:
   - {fileID: 19800004, guid: f95ff734540a0d749be6571b6cb5b37f, type: 3}
   - {fileID: 19800000, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
+  attackEffect: {fileID: 19800000, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
+  attackOrigin: {fileID: 117405644892805253}
   particleHeightOffset: 1
 --- !u!195 &7983128360589699091
 NavMeshAgent:
@@ -2436,6 +2470,22 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-1227662530930145202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7758186678309711563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da5462acc472bd14c8f569483a64939f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lootDrops:
+  - {fileID: 7083271394954324395, guid: aab8dad1732375c429b0a074676f6d30, type: 3}
+  - {fileID: 1942245548449254, guid: 9c436d2eaf5a77e48a26bcbc3a68e3cb, type: 3}
+  - {fileID: 7178761690497923476, guid: 9c470e99b26111a428f838afe1737b49, type: 3}
 --- !u!1 &7758186678309711649
 GameObject:
   m_ObjectHideFlags: 0

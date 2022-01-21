@@ -21,19 +21,20 @@ public class AmmoManager : MonoBehaviour
 
     [SerializeField]
     private string scoreHeader = "Ammunition";
+
     public TextMeshProUGUI currentClipUi;
     public TextMeshProUGUI totalAmmoUi;
 
 
-    public void UpdateCurrentAmmoClip(int currentAmmo)
+    public void UpdateAmmoUi(int currentAmmo, int totalAmmo)
     {
-        currentClipUi.text = $"{scoreHeader}: {currentAmmo} / ";
+        currentClipUi.text = $"{scoreHeader}: {currentAmmo} / {totalAmmo}";
     }
 
 
-    public void UpdateTotalAmmo(int totalAmmo)
-    {
-        totalAmmoUi.text = $"{totalAmmo}";
-    }
+    //public void UpdateTotalAmmo(int totalAmmo)
+    //{
+    //    totalAmmoUi.text = totalAmmo.ToString();
+    //}
 
 }

@@ -15,8 +15,7 @@ public class DoorOpenTrigger : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            if (requireKeyCard && !isDoorUnlocked)
-            {
+            if (requireKeyCard && !isDoorUnlocked)           {
                 for (int i = 0; i < requiredIds.Length; i++)
                 {
                     // Check if keycard exists within the inventory

@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyAnimatorController : MonoBehaviour
@@ -7,6 +5,7 @@ public class EnemyAnimatorController : MonoBehaviour
     private Animator animator;
     private EnemyAnimator animatorEffects;
     private ZombieAIController aiController;
+    private DropLootOnDeath loot;
 
     // Start is called before the first frame update
     void Start()
@@ -16,6 +15,7 @@ public class EnemyAnimatorController : MonoBehaviour
         animator = GetComponent<Animator>();
         animatorEffects = GetComponent<EnemyAnimator>();
         aiController = GetComponent<ZombieAIController>();
+        loot = GetComponent<DropLootOnDeath>();
 
         // Setup ragdoll physics on enemy
         SetRigidBodyState(true);
@@ -27,13 +27,19 @@ public class EnemyAnimatorController : MonoBehaviour
         animatorEffects.PlayDeath();
         animator.SetTrigger("IsDead");
 
-        // Enable ragdoll physics
+        // Enable ragdoll physics and remove scripts that may affect their movement
+        Destroy(aiController);
         animator.enabled = false;
         SetRigidBodyState(false);
         SetColliderState(true);
         AppplyForce(gunForce, forceRadius);
 
-        Destroy(aiController);
+        // Loot
+        loot.DropLoot();
+
+        // Colliders
+        Destroy(gameObject.GetComponent<CapsuleCollider>());
+    
         Destroy(gameObject, 30f);
     }
 
@@ -50,6 +56,7 @@ public class EnemyAnimatorController : MonoBehaviour
 
     public void IsAttacking()
     {
+        animatorEffects.PlayAttack();
         animator.SetTrigger("IsAttacking");
     }
 
@@ -82,11 +89,11 @@ public class EnemyAnimatorController : MonoBehaviour
         foreach (var collider in colliders)
         {
             Rigidbody rigidbody = GetComponent<Rigidbody>();
-            if(rigidbody != null)
+            if (rigidbody != null)
             {
                 // rigidbody.AddExplosionForce(force, transform.position, forceRadius);
                 rigidbody.AddExplosionForce(force, transform.position, forceRadius, force * 0.2f, ForceMode.Impulse);
             }
-        } 
+        }
     }
 }

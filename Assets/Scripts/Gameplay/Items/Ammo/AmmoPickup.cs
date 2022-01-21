@@ -1,12 +1,16 @@
 using UnityEngine;
 
-public class w : Pickup
+public class AmmoPickup : Pickup
 {
+    public int ammoAmount = 32;
     private Pickup pickup;
+    public Transform weapon;
+    private Ammo ammo;
 
     private void Awake()
     {
         pickup = GetComponent<Pickup>();
+        ammo = weapon.gameObject.GetComponent<Ammo>();
     }
 
     /// <summary>
@@ -15,17 +19,19 @@ public class w : Pickup
     private void SubscribeEvents()
     {
         // Subscribe to events
-        pickup.OnPickUp += ScoreManager.Instance.UpdateScore;
         pickup.OnPickUp += StatsManager.Instance.UpdateItemsCollected;
+
+        ammo.onUpdateClip += AmmoManager.Instance.UpdateAmmoUi;
     }
 
     private void OnDisable()
     {
         // Unsubscribe from events
-        pickup.OnPickUp -= ScoreManager.Instance.UpdateScore;
         pickup.OnPickUp -= StatsManager.Instance.UpdateItemsCollected;
-    }
 
+        ammo.onUpdateClip += AmmoManager.Instance.UpdateAmmoUi;
+
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -33,6 +39,9 @@ public class w : Pickup
         {
             SubscribeEvents();
             pickup.GetPickedUp();
+
+            var ammo = weapon.GetComponent<Ammo>();
+            ammo.AddAmmo(ammoAmount);
         }
     }
 }

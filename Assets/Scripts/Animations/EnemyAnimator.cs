@@ -7,9 +7,15 @@ public class EnemyAnimator : MonoBehaviour
 {
     [Header("Effects")]
     [SerializeField]
+
     private ParticleSystem deathEffect;
     [SerializeField]
     private ParticleSystem[] damageEffect;
+
+    [SerializeField]
+    private ParticleSystem attackEffect;
+    [SerializeField]
+    private Transform attackOrigin;
 
     [SerializeField]
     private float particleHeightOffset;
@@ -36,6 +42,12 @@ public class EnemyAnimator : MonoBehaviour
 
         // Spawn a random hit effect from the particle array
         Instantiate(damageEffect[UnityEngine.Random.Range(0, damageEffect.Length)], GetheightOffset(gameObject), gameObject.transform.rotation);
+    }
+
+    public void PlayAttack()
+    {
+        Instantiate(attackEffect, attackOrigin.position, attackEffect.gameObject.transform.rotation);
+        attackEffect.Play();
     }
 
     /// <summary>

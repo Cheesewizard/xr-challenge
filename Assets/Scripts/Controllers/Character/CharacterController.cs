@@ -92,15 +92,14 @@ public class CharacterController : MonoBehaviour
 
     private void Jumping()
     {
-        var jumpPressed = Input.GetKey(KeyCode.Space);
+        var jumpPressed = Input.GetKeyDown(KeyCode.Space);
 
         // Check if jumping
         if (jumpPressed && isOnGround)
         {
-
-            AnimatorEventManager.Instance.PlayerJump(true);
-            rb.AddForce(Vector3.up * jumpForce * Time.deltaTime, ForceMode.Impulse);
             isOnGround = false;
+            AnimatorEventManager.Instance.PlayerJump(true);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);            
             AnimatorEventManager.Instance.PlayerTouchGround(false);
         }
     }

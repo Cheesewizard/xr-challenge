@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public abstract class Gun : MonoBehaviour
+public abstract class Gun : Ammo
 {
     [Header("RayCast")]
     [SerializeField]
@@ -30,8 +30,7 @@ public abstract class Gun : MonoBehaviour
     public float gunForce = 100f;
     public float forceRadius = 50f;
 
-    public int currentAmmoClip;
-    public int totalAmmunition;
+   
     public int costPerBullet = 1;
 
     public int clipSize = 32;
@@ -42,34 +41,15 @@ public abstract class Gun : MonoBehaviour
     private float nextTimeToFire;
     public bool isReloading;
 
-    // Events
-    public Action<int> onUpdateClip;
-    public Action<int> onUpdateTotalAmmo;
-
-
-    private void OnEnable()
-    {
-        onUpdateClip += AmmoManager.Instance.UpdateCurrentAmmoClip;
-        onUpdateTotalAmmo += AmmoManager.Instance.UpdateTotalAmmo;
-    }
-
-    private void OnDisable()
-    {
-        onUpdateClip -= AmmoManager.Instance.UpdateCurrentAmmoClip;
-        onUpdateTotalAmmo -= AmmoManager.Instance.UpdateTotalAmmo;
-    }
-
-
-
     private void Start()
-    {
+    {     
         // Start with full ammo
         currentAmmoClip = clipSize;
 
         // Update the UI for whatever the current value is at start
-        onUpdateClip?.Invoke(currentAmmoClip);
-        onUpdateTotalAmmo?.Invoke(totalAmmunition);
+        onUpdateClip?.Invoke(currentAmmoClip, totalAmmunition);
     }
+
 
     /// <summary>
     /// When fire1 is pressed the gun will fire. 
@@ -196,7 +176,7 @@ public abstract class Gun : MonoBehaviour
     {
         // This flow should be improved
 
-        if (CheckIfCanReload())
+        if (CheckIfCanReload(clipSize))
         {
             isReloading = true;
             AnimatorEventManager.Instance.PlayerReload();
@@ -204,84 +184,11 @@ public abstract class Gun : MonoBehaviour
 
             // Wait for x seconds
             yield return new WaitForSeconds(reloadTime);
-            ReloadFromAmmo();
+            ReloadFromAmmo(clipSize);
             isReloading = false;
         }
 
         yield return new WaitForSeconds(0);
 
-    }
-
-    /// <summary>
-    /// This checks to see if the user is able to reload and returns a true or false.
-    /// </summary>
-    /// <returns></returns>
-    private bool CheckIfCanReload()
-    {
-        if (currentAmmoClip < clipSize && totalAmmunition > 1)
-        {
-            return true;
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// This processes the logic for moving ammo from an ammo pile when reloading
-    /// </summary>
-    private void ReloadFromAmmo()
-    {
-        if (currentAmmoClip < 0)
-        {
-            // This would indicate an empty clip
-            currentAmmoClip = 0;
-        }
-
-        var emptyBulletSlots = clipSize - currentAmmoClip;
-
-        // There exists enough bullets in our ammo pile
-        if (totalAmmunition / emptyBulletSlots >= 1)
-        {
-            // Add the remaining bullets, to fill up the clip to full
-            currentAmmoClip = clipSize;
-            totalAmmunition -= emptyBulletSlots;
-        }
-        else
-        {
-            // Add the remaining amound of our ammo pile to our current ammo clip
-            currentAmmoClip += totalAmmunition;
-            totalAmmunition -= totalAmmunition;
-        }
-
-        onUpdateClip?.Invoke(currentAmmoClip);
-        onUpdateTotalAmmo?.Invoke(totalAmmunition);
-    }
-
-    /// <summary>
-    /// Decreases the total ammo count
-    /// </summary>
-    public virtual void DecreaseAmmo()
-    {
-        if (isReloading)
-        {
-            return;
-        }
-
-        currentAmmoClip -= 1;
-        onUpdateClip?.Invoke(currentAmmoClip);
-
-        if (currentAmmoClip <= 0)
-        {
-            StartCoroutine(DoReload());
-        }
-    }
-
-    /// <summary>
-    /// Increases the total ammo count
-    /// </summary>
-    /// <param name="ammoAmount"></param>
-    public void AddAmmo(int ammoAmount)
-    {
-        totalAmmunition += ammoAmount;
-        onUpdateTotalAmmo?.Invoke(ammoAmount);
     }
 }

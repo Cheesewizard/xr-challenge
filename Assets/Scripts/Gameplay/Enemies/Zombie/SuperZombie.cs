@@ -4,15 +4,15 @@ public class SuperZombie : Enemy
 {
     public event Action OnSuperZombieDeath;
 
-    private void OnEnable()
-    {
-        OnSuperZombieDeath += AchievementManager.Instance.SuperZombieAchievement;
-    }
+    //private void OnEnable()
+    //{
+    //    OnSuperZombieDeath += AchievementManager.Instance.SuperZombieAchievement;
+    //}
 
-    private void OnDisable()
-    {
-        OnSuperZombieDeath -= AchievementManager.Instance.SuperZombieAchievement;
-    }
+    //private void OnDisable()
+    //{
+    //    OnSuperZombieDeath -= AchievementManager.Instance.SuperZombieAchievement;
+    //}
 
     public override void TakeDamage(float amount, float gunForce, float forceRadius)
     {

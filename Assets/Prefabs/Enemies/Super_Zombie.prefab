@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3389476239270996061
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5397479974469271978}
+  m_Layer: 0
+  m_Name: Attack Origin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5397479974469271978
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3389476239270996061}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.00009, y: 0.00423, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5041576781155474581}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5041576781155827873
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,6 +484,7 @@ Transform:
   m_LocalScale: {x: 1.0000001, y: 1, z: 1.0000001}
   m_Children:
   - {fileID: 5041576781155474585}
+  - {fileID: 5397479974469271978}
   m_Father: {fileID: 5041576781155474673}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4056,6 +4087,7 @@ GameObject:
   - component: {fileID: 5936541405939450357}
   - component: {fileID: 5945496192245876516}
   - component: {fileID: 394278204}
+  - component: {fileID: 7961236502766503149}
   m_Layer: 0
   m_Name: Super_Zombie
   m_TagString: Untagged
@@ -4148,6 +4180,8 @@ MonoBehaviour:
   damageEffect:
   - {fileID: 198602994958770764, guid: ec1383a81f8b26e41bd5795fba065567, type: 3}
   - {fileID: 19800000, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
+  attackEffect: {fileID: 19800000, guid: bc98890f6028f444eaa7789bde5e2eeb, type: 3}
+  attackOrigin: {fileID: 5397479974469271978}
   particleHeightOffset: 1
 --- !u!136 &5479900690976861100
 CapsuleCollider:
@@ -4175,7 +4209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77d326da568e68d41a5809b77fe2d17b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 100
+  Health: 120
   Power: 20
   Speed: 0
   IsDead: 0
@@ -4220,6 +4254,22 @@ MonoBehaviour:
   startPos: {x: 0, y: 0, z: 0}
   attackDelay: 3
   attackDistance: 1
+--- !u!114 &7961236502766503149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5041576781155828041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da5462acc472bd14c8f569483a64939f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lootDrops:
+  - {fileID: 7083271394954324395, guid: aab8dad1732375c429b0a074676f6d30, type: 3}
+  - {fileID: 1942245548449254, guid: 9c436d2eaf5a77e48a26bcbc3a68e3cb, type: 3}
+  - {fileID: 7178761690497923476, guid: 9c470e99b26111a428f838afe1737b49, type: 3}
 --- !u!1 &5041576781155828043
 GameObject:
   m_ObjectHideFlags: 0

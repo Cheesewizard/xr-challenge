@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class w : Pickup
+public class ItemScore : Pickup
 {
     private Pickup pickup;
 

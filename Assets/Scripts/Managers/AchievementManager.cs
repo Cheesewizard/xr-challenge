@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -154,6 +153,7 @@ public class AchievementManager : MonoBehaviour
         {
             var message = "Congrats you killed your first super Zombie";
             DisplayAcheivement(message);
+            killedFirstZombie = true;
         }
     }
 

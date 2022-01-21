@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
@@ -22,38 +20,38 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    List<IItemTypes> itemTypes = new List<IItemTypes>();
-    public int noOfUniqueItemsRequired = 5;
 
     public event Action OnLevelComplete;
     public event Action OnInventoryScreen;
 
-    public event Action OnAddItemType;
+    // Refers to the keys within the level
+    private int[] requiredObjectiveIds = new int[] { 11, 6, 3};
 
     private void OnEnable()
     {
-
+        CharacterManager.Instance.onAddItemToInventory += CheckObjectiveIsComplete;
     }
 
-    public void AddItem(GameObject pickup)
+    private void OnDisable()
     {
-        var type = pickup.GetComponent<IItemTypes>();
-        itemTypes.Add(type);
-
-        CheckObjectiveIsComplete();
+        CharacterManager.Instance.onAddItemToInventory -= CheckObjectiveIsComplete;
     }
 
+
+    /// <summary>
+    /// Checks to see if 5 game objects have been collected. If true it fires an event that allows the game to be completed
+    /// </summary>
     private void CheckObjectiveIsComplete()
     {
-        var uniqueItems = itemTypes.GroupBy(x => x.Name).Count();
-        if (uniqueItems >= noOfUniqueItemsRequired)
+        for (int i = 0; i < requiredObjectiveIds.Length; i++)
         {
-            OnLevelComplete?.Invoke();
+            if (!CharacterManager.Instance.Inventory.Contains(requiredObjectiveIds[i]))
+            {
+                // Not collected all the items needed
+                return;
+            }
         }
-    }
 
-    public void AllowCompleteLevel()
-    {
-
+        OnLevelComplete?.Invoke();
     }
 }

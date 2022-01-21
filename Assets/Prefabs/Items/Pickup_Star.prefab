@@ -93,11 +93,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4763621664299174}
   - component: {fileID: 1879566365}
-  - component: {fileID: 1879566364}
   - component: {fileID: 6797307808944360355}
-  - component: {fileID: 827953429215135593}
   - component: {fileID: 5490213956046924055}
-  - component: {fileID: -9027721991916870443}
+  - component: {fileID: 3014698637795826141}
   m_Layer: 0
   m_Name: Pickup_Star
   m_TagString: Untagged
@@ -135,20 +133,6 @@ CapsuleCollider:
   m_Height: 0.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.4, z: 0}
---- !u!114 &1879566364
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1942245548449254}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 833b9adb145a0b248beadf443946b4b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scoreValue: 100
-  animator: {fileID: 6797307808944360355}
 --- !u!114 &6797307808944360355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,18 +148,6 @@ MonoBehaviour:
   modelRenderer: {fileID: 23739269601660344}
   idleEffect: {fileID: 1460890530581548024}
   collectEffect: {fileID: 5201718977418882864}
---- !u!114 &827953429215135593
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1942245548449254}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82858e42b734cfe4495b5354361ff6d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5490213956046924055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,7 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9c9dae4ce12d9a40a4b6e6f098810a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-9027721991916870443
+--- !u!114 &3014698637795826141
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -197,9 +169,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1942245548449254}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84bf6eb12a7278e478628320f4398fab, type: 3}
+  m_Script: {fileID: 11500000, guid: 6a14f7190ae6cde4fb740c40f9f58c20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scoreValue: 100
+  animator: {fileID: 6797307808944360355}
+  name: Star
 --- !u!1 &5703120401451068077
 GameObject:
   m_ObjectHideFlags: 0

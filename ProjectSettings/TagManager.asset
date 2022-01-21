@@ -6,6 +6,7 @@ TagManager:
   tags:
   - FxTemporaire
   - Floor
+  - Door_Button
   layers:
   - Default
   - TransparentFX
@@ -18,9 +19,9 @@ TagManager:
   - PostProcessing
   - Ground
   - Damageable
+  - 
+  - Doors
   - Player
-  - 
-  - 
   - 
   - 
   - 

@@ -28,7 +28,7 @@ public class Rifle : Gun
         {
             if (FireGun())
             {
-                Shoot(GetDirection(), gunPosition);
+                Shoot(GetDirection(), bulletsSpawn);
                 DecreaseAmmo();
             }
         }
@@ -36,7 +36,7 @@ public class Rifle : Gun
 
     private Vector3 GetDirection()
     {
-        Vector3 direction = gunPosition.transform.up;
+        Vector3 direction = bulletsSpawn.transform.up;
 
         if (addBulletSpread)
         {

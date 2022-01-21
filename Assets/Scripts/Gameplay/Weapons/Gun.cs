@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -21,32 +22,60 @@ public abstract class Gun : MonoBehaviour
     private TrailRenderer bulletEffect;
 
     [Header("Gun Position")]
-    public Transform gunPosition;
+    public Transform bulletsSpawn;
 
-    [Header("Gun Variables")]
+    [Header("Variables")]
     public float fireRate = 0.5f;
     public int damage = 10;
     public float gunForce = 100f;
     public float forceRadius = 50f;
 
+    public int currentAmmoClip;
     public int totalAmmunition;
     public int costPerBullet = 1;
 
     public int clipSize = 32;
-    public int currentAmmoClip;
+
     public float reloadTime = 1.5f;
 
     // Used to cause bullet delays before firing again
     private float nextTimeToFire;
     public bool isReloading;
 
+    // Events
+    public Action<int> onUpdateClip;
+    public Action<int> onUpdateTotalAmmo;
+
+
+    private void OnEnable()
+    {
+        onUpdateClip += AmmoManager.Instance.UpdateCurrentAmmoClip;
+        onUpdateTotalAmmo += AmmoManager.Instance.UpdateTotalAmmo;
+    }
+
+    private void OnDisable()
+    {
+        onUpdateClip -= AmmoManager.Instance.UpdateCurrentAmmoClip;
+        onUpdateTotalAmmo -= AmmoManager.Instance.UpdateTotalAmmo;
+    }
+
+
+
     private void Start()
     {
         // Start with full ammo
         currentAmmoClip = clipSize;
+
+        // Update the UI for whatever the current value is at start
+        onUpdateClip?.Invoke(currentAmmoClip);
+        onUpdateTotalAmmo?.Invoke(totalAmmunition);
     }
 
-
+    /// <summary>
+    /// When fire1 is pressed the gun will fire. 
+    /// The gun will only fire when the user is also aiming
+    /// </summary>
+    /// <returns></returns>
     public bool FireGun()
     {
         if (Time.time >= nextTimeToFire)
@@ -65,6 +94,11 @@ public abstract class Gun : MonoBehaviour
         AnimatorEventManager.Instance.PlayerShoot(false);
         return false;
     }
+
+    /// <summary>
+    /// When fire2 is pressed the characterm aims down the gun.
+    /// </summary>
+    /// <returns></returns>
     public bool AimGun()
     {
         var aimPressed = Input.GetButton("Fire2");
@@ -81,20 +115,26 @@ public abstract class Gun : MonoBehaviour
 
         return false;
     }
-    public void Shoot(Vector3 direction, Transform gunPosition)
+
+    /// <summary>
+    /// Prcesses the bullet physics using a raycast and processes the bullet effects
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <param name="bulletsSpawn"></param>
+    public void Shoot(Vector3 direction, Transform bulletsSpawn)
     {
         if (direction == Vector3.zero)
         {
             // Get the direction facing from the gun barrel, not been adjusted
-            direction = gunPosition.transform.up;
+            direction = bulletsSpawn.transform.up;
         }
 
         // Not clean code
         muzleFlashParticleEffect.Play();
 
-        if (Physics.Raycast(gunPosition.transform.position, direction, out RaycastHit hit, float.MaxValue, layerMask))
+        if (Physics.Raycast(bulletsSpawn.transform.position, direction, out RaycastHit hit, float.MaxValue, layerMask))
         {
-            var trail = Instantiate(bulletEffect, gunPosition.transform.position, Quaternion.identity);
+            var trail = Instantiate(bulletEffect, bulletsSpawn.transform.position, Quaternion.identity);
 
             // Spawn a hit effect at the point the trail hits the raycast point
             StartCoroutine(SpawnBulletEffect(trail, hit, impactParticleEffect));
@@ -108,6 +148,13 @@ public abstract class Gun : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Instantiates the bullet trail effect
+    /// </summary>
+    /// <param name="trail"></param>
+    /// <param name="hit"></param>
+    /// <param name="impactParticleEffect"></param>
+    /// <returns></returns>
     public IEnumerator SpawnBulletEffect(TrailRenderer trail, RaycastHit hit, ParticleSystem impactParticleEffect)
     {
         var time = 0f;
@@ -129,6 +176,9 @@ public abstract class Gun : MonoBehaviour
         Destroy(trail.gameObject, trail.time);
     }
 
+    /// <summary>
+    /// Checks to see if the user is currently pressing the reload button
+    /// </summary>
     public void CheckForReload()
     {
         // This logic does not take into account at what point in the animation do we give the player their ammo back
@@ -138,6 +188,10 @@ public abstract class Gun : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This functions starts the reload animation
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator DoReload()
     {
         // This flow should be improved
@@ -147,7 +201,7 @@ public abstract class Gun : MonoBehaviour
             isReloading = true;
             AnimatorEventManager.Instance.PlayerReload();
             AnimatorEventManager.Instance.PlayerHasReloaded(false);
-                  
+
             // Wait for x seconds
             yield return new WaitForSeconds(reloadTime);
             ReloadFromAmmo();
@@ -157,6 +211,11 @@ public abstract class Gun : MonoBehaviour
         yield return new WaitForSeconds(0);
 
     }
+
+    /// <summary>
+    /// This checks to see if the user is able to reload and returns a true or false.
+    /// </summary>
+    /// <returns></returns>
     private bool CheckIfCanReload()
     {
         if (currentAmmoClip < clipSize && totalAmmunition > 1)
@@ -166,6 +225,9 @@ public abstract class Gun : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// This processes the logic for moving ammo from an ammo pile when reloading
+    /// </summary>
     private void ReloadFromAmmo()
     {
         if (currentAmmoClip < 0)
@@ -189,8 +251,14 @@ public abstract class Gun : MonoBehaviour
             currentAmmoClip += totalAmmunition;
             totalAmmunition -= totalAmmunition;
         }
+
+        onUpdateClip?.Invoke(currentAmmoClip);
+        onUpdateTotalAmmo?.Invoke(totalAmmunition);
     }
 
+    /// <summary>
+    /// Decreases the total ammo count
+    /// </summary>
     public virtual void DecreaseAmmo()
     {
         if (isReloading)
@@ -199,15 +267,21 @@ public abstract class Gun : MonoBehaviour
         }
 
         currentAmmoClip -= 1;
+        onUpdateClip?.Invoke(currentAmmoClip);
+
         if (currentAmmoClip <= 0)
         {
             StartCoroutine(DoReload());
         }
     }
 
-
+    /// <summary>
+    /// Increases the total ammo count
+    /// </summary>
+    /// <param name="ammoAmount"></param>
     public void AddAmmo(int ammoAmount)
     {
         totalAmmunition += ammoAmount;
+        onUpdateTotalAmmo?.Invoke(ammoAmount);
     }
 }

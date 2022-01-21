@@ -22,13 +22,22 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        
+    }
+
+    private void OnDisable()
+    {
+        
+    }
+
 
     [SerializeField]
     private string scoreHeader = "SCORE";
     private int currentScore;
 
     public TextMeshProUGUI scoreText;
-
 
     public void UpdateScore(Pickup pickup)
     {

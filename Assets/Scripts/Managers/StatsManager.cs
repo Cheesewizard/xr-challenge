@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,6 +35,11 @@ public class StatsManager : MonoBehaviour
         AnimatorEventManager.Instance.OnEnemyDamage -= Instance.UpdateDamageGiven;
     }
 
+    // Events
+    public Action<int> onItemsCollected;
+    public Action<int> onEnemysKilled;
+    public Action<int> onDamageGiven;
+
 
     private Stats stats;
     private void Start()
@@ -44,16 +50,19 @@ public class StatsManager : MonoBehaviour
     public void UpdateItemsCollected(Pickup pickup)
     {
         stats.ItemsCollected += 1;
+        onItemsCollected?.Invoke(stats.ItemsCollected);
     }
 
     public void UpdateEnemiesKilled(Enemy enemy)
     {
         stats.EnemiesKilled += 1;
+        onEnemysKilled?.Invoke(stats.EnemiesKilled);
     }
 
     public void UpdateDamageGiven(Enemy enemy, float amount)
     {
         stats.TotalDamageGiven += amount;
+        onDamageGiven?.Invoke((int)stats.TotalDamageGiven);
     }
 
     public void UpdateDamageTaken(float amount)

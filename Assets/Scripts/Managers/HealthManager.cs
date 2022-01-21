@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -22,41 +19,30 @@ public class HealthManager : MonoBehaviour
         }
     }
 
-
     [SerializeField]
     private string scoreHeader = "HEALTH";
     public TextMeshProUGUI healthText;
-    public int PlayerHealth = 100;
-    private bool isDead;
 
-    // Start is called before the first frame update
-    void Start()
+
+    private void Start()
     {
-        AnimatorEventManager.Instance.OnEnemyAttack += TakeDamage;
-        healthText.text = $"{scoreHeader}: {PlayerHealth}";
+        // Set start health text
+        var health = CharacterManager.Instance.PlayerHealth;
+        healthText.text = $"{scoreHeader}: {health}";
     }
 
-    private void TakeDamage(Enemy enemy)
+    private void OnEnable()
     {
-        if (isDead)
-        {
-            return;
-        }
-
-        PlayerHealth -= enemy.Power;
-        if (PlayerHealth <= 0)
-        {
-            PlayerHealth = 0;
-            AnimatorEventManager.Instance.PlayerDeath();
-            isDead = true;
-        }
-
-        healthText.text = $"{scoreHeader}: {PlayerHealth}";
+        CharacterManager.Instance.onPlayerTakeDamage += UpdateHealth;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
+        CharacterManager.Instance.onPlayerTakeDamage -= UpdateHealth;
+    }
 
+    private void UpdateHealth(int health)
+    {
+        healthText.text = $"{scoreHeader}: {health}";
     }
 }
